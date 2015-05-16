@@ -7,31 +7,31 @@
 
 makeCacheMatrix <- function(x = matrix()) {
   
-  ## initialize cachedM that will store
+  ## initialize cachedMat that will store
   ## cached matrix
   cachedMat <- NULL
   
   ## store a matrix
-  setMat <- function(y) {    
-    x <<- y    
+  setMat <- function(newMat) {  
+    ##store matrix
+    cachedMat <<- newMat    
     ##clear value
-    cachedMat <<- NULL
+    cachedInv <<- NULL
   }
   
   ## return cached matrix
   getMat <- function() {
-    x
+    cachedMat
   }
   
   ## store an inverted matrix
   setInv <- function (inv) {
-    cachedMat <<- inv
+    cachedInv <<- inv
   }
   
   ## return an inverted matrix
   getInv <- function() {
-    cachedMat
-    
+    cachedInv    
   }
 
   ## return list
@@ -50,5 +50,21 @@ makeCacheMatrix <- function(x = matrix()) {
 ## then the cachesolve retrieves the inverse from the cache
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+  
+  # try to get cached inverted matrix
+  inv <- x$getInv()
+  
+  # if inverted matrix was cached, return it
+  if(!is.null(inv)) {
+    message("getting cached inverted matrix")
+    return(inv)
+  }
+  
+  # if not, get matrix, invert it and store
+  mat <- x$getMat()  
+  inv <- solve(mat)  
+  x$setInv(inv)
+  
+  ## Return a matrix that is the inverse of 'x'  
+  inv
 }
